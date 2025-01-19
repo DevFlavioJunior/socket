@@ -15,8 +15,8 @@ def main():
     
     try:
         while True:
-            message, client_address = server.recvfrom(2048)
-            print(f"Mensagem recebida de {client_address}: {message.decode('utf-8')}")
+            message, client_address = server.recvfrom(1024)
+            print(f"{client_address[0]+':'+ str(client_address[1])}: {message.decode('utf-8')}")
             if client_address not in clients:
                 clients.append(client_address)
             
@@ -40,6 +40,7 @@ def deleteclient(client, server):
         print(f"Cliente {client} desconectado.")
     else:
         print(f"Cliente {client} não encontrado.")
+
 
 if __name__ == "__main__":
     main()
