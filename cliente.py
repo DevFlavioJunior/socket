@@ -8,11 +8,13 @@ def main():
         server_port = 12000
         client = socket(AF_INET, SOCK_DGRAM)
         nickname = input("Digite seu nickname: ")
-        client.sendto(f"{nickname} : Se juntou a nós {datahora()}".encode('utf-8'), (server_ip, server_port))
+        escrever_arquivo("Se juntou a nós",server_ip,server_port,nickname,client)
+        print("Conectado ao chat.")
 
-        
+
         threading.Thread(target=receiveMessages, args=(client,), daemon=True).start()
 
+ 
         sendMessages(client, nickname, server_ip, server_port)
 
     except Exception as e:
@@ -24,10 +26,11 @@ def sendMessages(client, nickname, server_ip, server_port):
         try:
             message = input("Digite sua mensagem (ou 'exit' para sair): ").strip().lower()
             if message == "exit":
-                client.sendto(f"{nickname} : Saiu {datahora()}".encode('utf-8'), (server_ip, server_port))
+                escrever_arquivo("Saiu",server_ip,server_port,nickname,client)
                 print("Você saiu do chat.")
                 break
             client.sendto(f"{nickname} : {message} {datahora()}".encode('utf-8'), (server_ip, server_port))
+            escrever_arquivo(message,server_ip,server_port,nickname,client)
 
         except Exception as e:
             print(f"Erro ao enviar mensagem: {e}")
@@ -35,14 +38,24 @@ def sendMessages(client, nickname, server_ip, server_port):
 
     client.close() 
 
+
 def receiveMessages(client):
     while True:
         try:
-            message, _ = client.recvfrom(2048)
+           
+            message, _ = client.recvfrom(1024)
             print(f"\n{message.decode('utf-8')}")
-        except Exception as e:
-            print(f"Erro ao receber mensagem: {e}")
-            break
+        except:
+            print(f"Erro ao receber mensagem (conexão perdida)")
+            break  
+     
+
+    client.close() 
+
+def escrever_arquivo(mensagem,server_ip,server_port,nickname,client):
+    with open("chat.txt", "wb") as arquivo:
+        arquivo.write(f"{nickname} : {mensagem} {datahora()}\n".encode('utf-8'))
+        client.sendto("True".encode(), (server_ip, server_port))
 
 def datahora():
     data = datetime.datetime.now()

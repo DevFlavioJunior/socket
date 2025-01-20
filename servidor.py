@@ -15,31 +15,30 @@ def main():
     try:
         while True:
             try:
-                # Espera por mensagens de clientes
-                message, client_address = server.recvfrom(1024)
-                print(f"{client_address[0]+':'+ str(client_address[1])}: {message.decode('utf-8')}")
                 
-                # Adiciona cliente à lista, se não estiver presente
+                message, client_address = server.recvfrom(1024)
+                if message:
+                  arquivo = ler_arquivo()
+                  server.sendto(arquivo.encode('utf-8'), client_address)
+               
                 if client_address not in clients:
                     clients.append(client_address)
 
-                # Envia a mensagem para todos os outros clientes
                 for client in clients:
                     if client != client_address:
                         try:
-                            server.sendto(message, client)
+                          server.sendto(arquivo.encode('utf-8'), client_address)
                         except Exception as e:
                             print(f"Erro ao enviar para {client}: {e}")
-                            deleteclient(client, server)  # Chama a função para remover o cliente
+                            deleteclient(client, server)  
                             
-            except Exception as e:
-                print(f"Erro ao receber mensagem: {e}")
-
+            except:
+                continue  
     except KeyboardInterrupt:
         print("\nServidor interrompido manualmente.")
     finally:
         server.close()
-        print("Servidor fechado.")
+        print("\nServidor fechado.")
 
 def deleteclient(client, server):
     if client in clients:
@@ -48,5 +47,8 @@ def deleteclient(client, server):
     else:
         print(f"Cliente {client} não encontrado.")
 
+def ler_arquivo():
+    with open("chat.txt", "rb") as arquivo:
+        return arquivo.read().decode('utf-8')
 if __name__ == "__main__":
     main()
