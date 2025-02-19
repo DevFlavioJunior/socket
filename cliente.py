@@ -43,38 +43,26 @@ def receber_mensagens():
 def enviar_mensagem():
     while True:
         try:
-            # Solicita uma mensagem do usuário
             mensagem = input()
             
-            # Verifica se o usuário digitou 'bye' para sair
             if mensagem.strip().lower() == 'bye':
                 client.sendto(b'bye', (SERVER_IP, SERVER_PORT))
                 print("Saindo do chat...")
                 client.close()
                 break
-            
-            # Cria um arquivo temporário com a mensagem
-            with open('mensagem.txt', 'w') as file:
-                file.write(mensagem)
-            
-            # Fragmenta e envia o arquivo
-            with open('mensagem.txt', 'rb') as file:
-                while True:
-                    fragment = file.read(BUFFER_SIZE)
-                    if not fragment:
-                        break
-                    # Envia o fragmento
-                    client.sendto(fragment, (SERVER_IP, SERVER_PORT))
-            
-            # Envia o 'EOF' após todos os fragmentos
+
+            # Fragmenta mensagens longas manualmente
+            for i in range(0, len(mensagem), BUFFER_SIZE):
+                fragment = mensagem[i:i + BUFFER_SIZE]
+                client.sendto(fragment.encode(), (SERVER_IP, SERVER_PORT))
+
+            # Envia um delimitador indicando fim da mensagem completa
             client.sendto(b'EOF', (SERVER_IP, SERVER_PORT))
-            
-            # Remove o arquivo temporário após o envio
-            os.remove('mensagem.txt')
-        
+
         except Exception as e:
             print(f"Erro ao enviar a mensagem: {e}")
             break
+
 
 # Função para conectar ao servidor
 def conectar():
