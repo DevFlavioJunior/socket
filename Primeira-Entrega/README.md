@@ -36,21 +36,21 @@ pip install -r requirements.txt  # Se houver um arquivo de dependências
 ### 3. Iniciar o Servidor
 Execute o seguinte comando para iniciar o servidor:
 ```sh
-python servidor.py
+python server.py
 ```
 
 ### 4. Iniciar um Cliente
 Abra outro terminal e execute:
 ```sh
-python cliente.py
+python client.py
 ```
 Digite um nome de usuário e comece a enviar mensagens!
 
 ## Estrutura do Projeto
 ```
 /chat-udp
-│-- cliente.py
-│-- servidor.py
+│-- client.py
+│-- server.py
 │-- README.md
 ```
 
