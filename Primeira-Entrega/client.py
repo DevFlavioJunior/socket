@@ -10,7 +10,7 @@ BUFFER_SIZE = 1024       # Tamanho máximo do pacote
 client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 def receber_mensagens():
-    """Função para receber mensagens e arquivos fragmentados do servidor."""
+    # Função para receber mensagens e arquivos fragmentados do servidor.
     fragments = []  # Lista para armazenar fragmentos de arquivos
 
     while True:
