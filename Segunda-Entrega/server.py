@@ -175,7 +175,7 @@ class Servidor:
 
     # Inicia o servidor e aguarda conexões
     def iniciar_servidor(self):
-        print("Servidor iniciado")
+        print("Servidor rodando na porta 12345")
         while True:
             try:
                 dados, endereco = self.sock.recvfrom(self.BUFFER_SIZE)  # Recebe dados de um cliente
